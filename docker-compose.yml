@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  flask-app:
+    image: flask-app
+    ports:
+      - "4000:80"
+    environment:
+      AWS_ACCESS_KEY_ID: AKIAW3MD64NI7ZFNTA6A
+      AWS_SECRET_ACCESS_KEY: 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
+      AWS_DEFAULT_REGION: us-west-1

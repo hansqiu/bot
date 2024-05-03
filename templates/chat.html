@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Room</title>
+    <style>
+        #chatbox {
+            display: flex;
+            flex-direction: column;
+            height: 500px;  /* Increased height */
+            width: 300px;   /* Reduced width */
+            overflow: auto;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        .bot-msg, .user-msg {
+            margin: 5px;
+            padding: 5px;
+            border-radius: 10px;
+            width: 90%;     /* Make sure messages don't exceed the chatbox width */
+            word-wrap: break-word; /* Ensures text breaks to next line if too long */
+        }
+        .bot-msg {
+            align-self: flex-start;
+            background-color: #f1f0f0;
+        }
+        .user-msg {
+            align-self: flex-end;
+            background-color: #ddf;
+        }
+    </style>
+    
+</head>
+<body>
+    <div id="chatbox">
+        <div class="bot-msg">What is your name?</div>
+    </div>
+    <input type="text" id="answer" autofocus>
+    <button onclick="sendAnswer()">Send</button>
+
+    <script>
+        function sendAnswer() {
+            const answer = document.getElementById('answer').value;
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // Ensures the content type is application/json
+                },
+                body: JSON.stringify({answer: answer})  // Make sure the body is a stringified JSON object
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.question) {
+                    document.getElementById('chatbox').innerHTML += '<div class="user-msg">' + answer + '</div>';
+                    document.getElementById('chatbox').innerHTML += '<div class="bot-msg">' + data.question + '</div>';
+                    document.getElementById('answer').value = '';
+                    document.getElementById('answer').focus();
+                } else if (data.message) {
+                    document.getElementById('chatbox').innerHTML += '<div class="user-msg">' + answer + '</div>';
+                    document.getElementById('chatbox').innerHTML += '<div class="bot-msg">' + data.message + '</div>';
+                    document.getElementById('answer').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+        }
+    </script>
+        
+</body>
+</html>
